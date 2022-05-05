@@ -1,7 +1,8 @@
 CC=gcc
+OUT=out
 
 main: main.c
-	$(CC) -o out pledge.c main.c -lseccomp
+	$(CC) -o $(OUT) pledge.c main.c -lseccomp
 
 clean:
-	rm out
+	rm $(OUT)
