@@ -10,7 +10,7 @@ const int MAX_PROMISE_STRING_LENGTH = 1000;
 char* promises_array[] = {
     "stdio",
     "rpath",
-    "cpath",
+    "cpath"
     NULL
 };
 
@@ -18,7 +18,7 @@ char* promises_array[] = {
 char* promises_to_syscalls_array[][10] = {
     {"dup","dup2","write",NULL},
     {"chdir","lstat",NULL},
-    {"mkdir","rmdir","rename"}
+    {"mkdir","rmdir",NULL}
 };
 
 // return the index of a promise in the promises_array
@@ -42,7 +42,7 @@ void set_seccomp_for_syscalls(char** syscalls, scmp_filter_ctx ctx){
     }
 }
 
-// initalize the seccomp filters and default action.
+// initialize the seccomp filters and default action.
 scmp_filter_ctx init_seccomp(){
     scmp_filter_ctx ctx;
     // blacklisting everything by default
@@ -50,10 +50,10 @@ scmp_filter_ctx init_seccomp(){
     return ctx;
 }
 
-// pledge takes a string that holds multiple promises sperated by a white space.
+// pledge takes a string that holds multiple promises separated by white space.
 void pledge(const char* promises){
     printf("%s\n", "Pledging");
-    // initalize seccomp
+    // initialize seccomp
     scmp_filter_ctx ctx = init_seccomp();
     // if string is not null terminated then exit
     int promise_string_size = strnlen(promises, MAX_PROMISE_STRING_LENGTH);
@@ -78,7 +78,7 @@ void pledge(const char* promises){
         // get next token in the string
         token = strtok (NULL, " ");
     }
-    // allow the program to use exit_group systemcall
+    // allow the program to use exit_group systemcall to exit without problems
     seccomp_rule_add(ctx, SCMP_ACT_ALLOW, seccomp_syscall_resolve_name("exit_group"), 0);
     // load the bpf filters
     seccomp_load(ctx);  
