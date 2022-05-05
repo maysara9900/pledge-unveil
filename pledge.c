@@ -10,7 +10,7 @@ const int MAX_PROMISE_STRING_LENGTH = 1000;
 char* promises_array[] = {
     "stdio",
     "rpath",
-    "cpath"
+    "cpath",
     NULL
 };
 
