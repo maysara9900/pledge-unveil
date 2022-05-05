@@ -35,7 +35,7 @@ int get_promise_index(char* promise){
 
 // for each system call in systemcalls array, set a bpf filter to allow it.
 void set_seccomp_for_syscalls(char** syscalls, scmp_filter_ctx ctx){
-    int i =0;
+    int i = 0;
     while(syscalls[i]!=NULL){
         seccomp_rule_add(ctx, SCMP_ACT_ALLOW, seccomp_syscall_resolve_name(syscalls[i]), 0);
         i++;
@@ -76,7 +76,7 @@ void pledge(const char* promises){
             set_seccomp_for_syscalls(syscalls, ctx);
         }
         // get next token in the string
-        token = strtok (NULL, " ");
+        token = strtok(NULL, " ");
     }
     // allow the program to use exit_group systemcall to exit without problems
     seccomp_rule_add(ctx, SCMP_ACT_ALLOW, seccomp_syscall_resolve_name("exit_group"), 0);
