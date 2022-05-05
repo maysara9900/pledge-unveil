@@ -3,11 +3,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-const int MAX_PROMISE_STRING_LENGTH = 1000;
+static const int MAX_PROMISE_STRING_LENGTH = 1000;
 
 // array holds all pledge promises string values
 // each promise corresponds to an array of systemcalls in promises_to_syscalls_array
-char* promises_array[] = {
+static char* promises_array[] = {
     "stdio",
     "rpath",
     "cpath",
@@ -15,14 +15,14 @@ char* promises_array[] = {
 };
 
 // array holds all system calls that maps to promises values.
-char* promises_to_syscalls_array[][10] = {
+static char* promises_to_syscalls_array[][10] = {
     {"dup","dup2","write",NULL},
     {"chdir","lstat",NULL},
     {"mkdir","rmdir",NULL}
 };
 
 // return the index of a promise in the promises_array
-int get_promise_index(char* promise){
+static int get_promise_index(char* promise){
     int i = 0;
     while(promises_array[i]!=NULL){
         if(strcmp(promise,promises_array[i])==0){
@@ -34,7 +34,7 @@ int get_promise_index(char* promise){
 }
 
 // for each system call in systemcalls array, set a bpf filter to allow it.
-void set_seccomp_for_syscalls(char** syscalls, scmp_filter_ctx ctx){
+static void set_seccomp_for_syscalls(char** syscalls, scmp_filter_ctx ctx){
     int i = 0;
     while(syscalls[i]!=NULL){
         seccomp_rule_add(ctx, SCMP_ACT_ALLOW, seccomp_syscall_resolve_name(syscalls[i]), 0);
@@ -43,7 +43,7 @@ void set_seccomp_for_syscalls(char** syscalls, scmp_filter_ctx ctx){
 }
 
 // initialize the seccomp filters and default action.
-scmp_filter_ctx init_seccomp(){
+static scmp_filter_ctx init_seccomp(){
     scmp_filter_ctx ctx;
     // blacklisting everything by default
     ctx = seccomp_init(SCMP_ACT_KILL);
