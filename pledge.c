@@ -16,8 +16,8 @@ static char* promises_array[] = {
 
 // array holds all system calls that maps to promises values.
 static char* promises_to_syscalls_array[][10] = {
-    {"dup","dup2","write",NULL},
-    {"chdir","lstat",NULL},
+    {"dup","dup2","write","read","fstat","lseek","close",NULL},
+    {"chdir","lstat","openat",NULL},
     {"mkdir","rmdir",NULL}
 };
 
@@ -50,24 +50,19 @@ static scmp_filter_ctx init_seccomp(){
     return ctx;
 }
 
-// pledge takes a string that holds multiple promises separated by white space.
 void pledge(const char* promises){
-    printf("%s\n", "Pledging");
-    // initialize seccomp
     scmp_filter_ctx ctx = init_seccomp();
     // if string is not null terminated then exit
     int promise_string_size = strnlen(promises, MAX_PROMISE_STRING_LENGTH);
     if(promise_string_size==MAX_PROMISE_STRING_LENGTH){
         exit(1);        
     } 
-    // convert the string to an array of charachters
     char array_of_chars[promise_string_size];
     strcpy(array_of_chars, promises);
     // split the string on white spaces
     char* token = strtok(array_of_chars, " ");
     // for each token (promise) in the string
     while(token!=NULL){
-        // get the promise index
         int index = get_promise_index(token);
         if(index!=-1){
             // get the corresponding systemcalls to this promise
